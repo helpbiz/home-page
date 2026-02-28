@@ -3,7 +3,6 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import {
-    LineChart,
     Line,
     AreaChart,
     Area,
@@ -151,8 +150,15 @@ function CustomTooltip({ active, payload, label }: { active?: boolean; payload?:
 export default function DashboardSection() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
-    const [budgetData] = useState(generateBudgetData);
-    const [complaintData] = useState(generateComplaintData);
+    const [budgetData, setBudgetData] = useState<{ month: string, before: number, after: number }[]>([]);
+    const [complaintData, setComplaintData] = useState<{ month: string, complaints: number }[]>([]);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+        setBudgetData(generateBudgetData());
+        setComplaintData(generateComplaintData());
+    }, []);
 
     // Live counter
     const [liveStats, setLiveStats] = useState({
@@ -285,48 +291,50 @@ export default function DashboardSection() {
                                     </span>
                                 </div>
                                 <div className="h-40">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <AreaChart data={budgetData}>
-                                            <defs>
-                                                <linearGradient id="gradGreen" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#22C55E" stopOpacity={0.3} />
-                                                    <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
-                                                </linearGradient>
-                                            </defs>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
-                                            <XAxis
-                                                dataKey="month"
-                                                tick={{ fontSize: 10, fill: "#64748B" }}
-                                                axisLine={{ stroke: "#1E293B" }}
-                                                tickLine={false}
-                                            />
-                                            <YAxis
-                                                tick={{ fontSize: 10, fill: "#64748B" }}
-                                                axisLine={false}
-                                                tickLine={false}
-                                                domain={[60, 105]}
-                                            />
-                                            <Tooltip content={<CustomTooltip />} />
-                                            <Line
-                                                type="monotone"
-                                                dataKey="before"
-                                                stroke="#475569"
-                                                strokeWidth={1.5}
-                                                strokeDasharray="4 4"
-                                                dot={false}
-                                                name="도입 전"
-                                            />
-                                            <Area
-                                                type="monotone"
-                                                dataKey="after"
-                                                stroke="#22C55E"
-                                                strokeWidth={2}
-                                                fill="url(#gradGreen)"
-                                                dot={false}
-                                                name="도입 후"
-                                            />
-                                        </AreaChart>
-                                    </ResponsiveContainer>
+                                    {isMounted && (
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <AreaChart data={budgetData}>
+                                                <defs>
+                                                    <linearGradient id="gradGreen" x1="0" y1="0" x2="0" y2="1">
+                                                        <stop offset="5%" stopColor="#22C55E" stopOpacity={0.3} />
+                                                        <stop offset="95%" stopColor="#22C55E" stopOpacity={0} />
+                                                    </linearGradient>
+                                                </defs>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                                                <XAxis
+                                                    dataKey="month"
+                                                    tick={{ fontSize: 10, fill: "#64748B" }}
+                                                    axisLine={{ stroke: "#1E293B" }}
+                                                    tickLine={false}
+                                                />
+                                                <YAxis
+                                                    tick={{ fontSize: 10, fill: "#64748B" }}
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                    domain={[60, 105]}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="before"
+                                                    stroke="#475569"
+                                                    strokeWidth={1.5}
+                                                    strokeDasharray="4 4"
+                                                    dot={false}
+                                                    name="도입 전"
+                                                />
+                                                <Area
+                                                    type="monotone"
+                                                    dataKey="after"
+                                                    stroke="#22C55E"
+                                                    strokeWidth={2}
+                                                    fill="url(#gradGreen)"
+                                                    dot={false}
+                                                    name="도입 후"
+                                                />
+                                            </AreaChart>
+                                        </ResponsiveContainer>
+                                    )}
                                 </div>
                             </div>
 
@@ -341,29 +349,31 @@ export default function DashboardSection() {
                                     </span>
                                 </div>
                                 <div className="h-32">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={complaintData}>
-                                            <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
-                                            <XAxis
-                                                dataKey="month"
-                                                tick={{ fontSize: 10, fill: "#64748B" }}
-                                                axisLine={{ stroke: "#1E293B" }}
-                                                tickLine={false}
-                                            />
-                                            <YAxis
-                                                tick={{ fontSize: 10, fill: "#64748B" }}
-                                                axisLine={false}
-                                                tickLine={false}
-                                            />
-                                            <Tooltip content={<CustomTooltip />} />
-                                            <Bar
-                                                dataKey="complaints"
-                                                fill="#3B82F6"
-                                                radius={[4, 4, 0, 0]}
-                                                name="민원 건수"
-                                            />
-                                        </BarChart>
-                                    </ResponsiveContainer>
+                                    {isMounted && (
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={complaintData}>
+                                                <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
+                                                <XAxis
+                                                    dataKey="month"
+                                                    tick={{ fontSize: 10, fill: "#64748B" }}
+                                                    axisLine={{ stroke: "#1E293B" }}
+                                                    tickLine={false}
+                                                />
+                                                <YAxis
+                                                    tick={{ fontSize: 10, fill: "#64748B" }}
+                                                    axisLine={false}
+                                                    tickLine={false}
+                                                />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Bar
+                                                    dataKey="complaints"
+                                                    fill="#3B82F6"
+                                                    radius={[4, 4, 0, 0]}
+                                                    name="민원 건수"
+                                                />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    )}
                                 </div>
                             </div>
                         </div>

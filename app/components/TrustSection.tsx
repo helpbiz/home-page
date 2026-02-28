@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Award, BookOpen, Building2, Users, FileCheck, GraduationCap } from "lucide-react";
+import { Award, Building2, FileCheck, GraduationCap } from "lucide-react";
 
 const stats = [
     {
