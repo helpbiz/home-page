@@ -8,6 +8,8 @@ export default function ContactSection() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -23,11 +25,50 @@ export default function ContactSection() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Contact form data:", formData);
-        setSubmitted(true);
-        setTimeout(() => setSubmitted(false), 5000);
+
+        setIsSubmitting(true);
+        setSubmitError("");
+
+        const payload = new FormData();
+        payload.set("name", formData.name.trim());
+        payload.set("phone", formData.phone.trim());
+        payload.set("email", formData.email.trim());
+        payload.set("organization", formData.organization.trim());
+        payload.set("department", formData.department.trim());
+        payload.set("message", formData.message.trim());
+        payload.set("_subject", `[상담신청] ${formData.organization.trim()} ${formData.name.trim()}`);
+        payload.set("_template", "table");
+        payload.set("_captcha", "false");
+
+        try {
+            const response = await fetch("https://formsubmit.co/ajax/helpbiz@naver.com", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                },
+                body: payload,
+            });
+
+            if (!response.ok) {
+                throw new Error("request_failed");
+            }
+
+            setSubmitted(true);
+            setFormData({
+                name: "",
+                email: "",
+                phone: "",
+                organization: "",
+                department: "",
+                message: "",
+            });
+        } catch (_error) {
+            setSubmitError("전송에 실패했습니다. helpbiz@naver.com 으로 직접 연락해 주세요.");
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const inputClass =
@@ -140,7 +181,7 @@ export default function ContactSection() {
                                         접수 완료!
                                     </h3>
                                     <p className="text-text-secondary">
-                                        24시간 내 담당자가 연락드리겠습니다.
+                                        상담 신청이 자동 접수되었습니다. 24시간 내 담당자가 연락드리겠습니다.
                                     </p>
                                 </motion.div>
                             ) : (
@@ -226,11 +267,16 @@ export default function ContactSection() {
 
                                     <button
                                         type="submit"
+                                        disabled={isSubmitting}
                                         className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-neon-green text-navy-950 font-semibold rounded-xl glow-green-hover hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                                     >
                                         <Send className="w-5 h-5" />
-                                        상담 신청하기
+                                        {isSubmitting ? "전송 중..." : "상담 신청하기"}
                                     </button>
+
+                                    {submitError ? (
+                                        <p className="text-xs text-red-300 text-center mt-3">{submitError}</p>
+                                    ) : null}
 
                                     <p className="text-xs text-text-muted text-center mt-4">
                                         제출하신 정보는 상담 목적으로만 사용되며, 개인정보 보호정책에 따라 안전하게 관리됩니다.

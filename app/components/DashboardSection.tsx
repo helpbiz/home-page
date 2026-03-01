@@ -62,6 +62,7 @@ function MapVisualization() {
 
             {/* Simulated map area outlines */}
             <svg className="absolute inset-0 w-full h-full opacity-20" viewBox="0 0 100 100">
+                <title>수거함 모니터링 지도</title>
                 <path d="M20,15 Q30,10 45,20 T70,18 L75,35 Q80,50 70,65 L55,75 Q40,80 25,70 L15,50 Q12,35 20,15Z" fill="none" stroke="#3B82F6" strokeWidth="0.5" />
                 <path d="M30,25 Q40,22 50,30 L60,28 L65,40 Q62,52 55,60 L40,65 Q32,60 28,45 Z" fill="#3B82F6" fillOpacity="0.05" stroke="#3B82F6" strokeWidth="0.3" />
             </svg>
@@ -195,7 +196,7 @@ export default function DashboardSection() {
                         실시간 대시보드
                     </span>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mb-4">
-                        IoT 관제 시스템{" "}
+                        AI iot 관제 시스템{" "}
                         <span className="gradient-text">미리보기</span>
                     </h2>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto">

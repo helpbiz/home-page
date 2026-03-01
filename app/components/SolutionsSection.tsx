@@ -19,8 +19,8 @@ const solutions = [
     },
     {
         icon: Radio,
-        badge: "IoT 기술",
-        title: "IoT 실시간 관제",
+        badge: "AI IoT 기술",
+        title: "AI iot 실시간 관제",
         description:
             "GPS 기반 쓰레기통 적재량 실시간 모니터링 시스템입니다. 수거 노선 최적화로 불필요한 운행을 줄이고, 지능형 스케줄링으로 민원 발생률을 대폭 감소시킵니다.",
         features: ["GPS 적재량 모니터링", "수거 노선 최적화", "민원 감소 45%↓"],
