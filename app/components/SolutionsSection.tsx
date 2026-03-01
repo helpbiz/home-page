@@ -152,7 +152,7 @@ export default function SolutionsSection() {
                         핵심 솔루션
                     </span>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-text-primary mb-4">
-                        지자체를 위한{" "}
+                        청소 행정을 위한{" "}
                         <span className="gradient-text">올인원 솔루션</span>
                     </h2>
                     <p className="text-text-secondary text-lg max-w-2xl mx-auto">
