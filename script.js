@@ -24,6 +24,7 @@ if (menuToggle && siteNav) {
 
 const revealItems = document.querySelectorAll(".reveal");
 const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formStatus");
 
 if ("IntersectionObserver" in window) {
 	const revealObserver = new IntersectionObserver(
@@ -53,7 +54,7 @@ if ("IntersectionObserver" in window) {
 }
 
 if (contactForm instanceof HTMLFormElement) {
-	contactForm.addEventListener("submit", (event) => {
+	contactForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
 
 		const formData = new FormData(contactForm);
@@ -63,19 +64,43 @@ if (contactForm instanceof HTMLFormElement) {
 		const interest = String(formData.get("interest") || "").trim();
 		const message = String(formData.get("message") || "").trim();
 
-		const subject = `[상담신청] ${company} ${name}`;
-		const body = [
-			"HelpBiz 상담 신청이 접수되었습니다.",
-			"",
-			`회사명: ${company}`,
-			`담당자명: ${name}`,
-			`연락처: ${phone}`,
-			`관심 분야: ${interest}`,
-			"",
-			"상담 내용:",
-			message,
-		].join("\n");
+		formData.set("company", company);
+		formData.set("name", name);
+		formData.set("phone", phone);
+		formData.set("interest", interest);
+		formData.set("message", message);
+		formData.append("_subject", `[상담신청] ${company} ${name}`);
+		formData.append("_template", "table");
+		formData.append("_captcha", "false");
 
-		window.location.href = `mailto:helpbiz@naver.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+		if (formStatus) {
+			formStatus.textContent = "상담 신청을 전송하고 있습니다...";
+			formStatus.classList.remove("error", "success");
+		}
+
+		try {
+			const response = await fetch("https://formsubmit.co/ajax/helpbiz@naver.com", {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+				},
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error("request_failed");
+			}
+
+			contactForm.reset();
+			if (formStatus) {
+				formStatus.textContent = "상담 신청이 접수되었습니다. 확인 후 연락드리겠습니다.";
+				formStatus.classList.add("success");
+			}
+		} catch (_error) {
+			if (formStatus) {
+				formStatus.textContent = "전송에 실패했습니다. helpbiz@naver.com 으로 직접 연락해 주세요.";
+				formStatus.classList.add("error");
+			}
+		}
 	});
 }
