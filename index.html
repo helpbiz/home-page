@@ -171,7 +171,31 @@
               파주시 운정
             </p>
           </div>
-          <a class="btn btn-primary" href="mailto:helpbiz@naver.com">문의 메일 보내기</a>
+          <form id="contactForm" class="contact-form" aria-label="상담 신청 폼">
+            <label for="company">회사명</label>
+            <input id="company" name="company" type="text" autocomplete="organization" required />
+
+            <label for="name">담당자명</label>
+            <input id="name" name="name" type="text" autocomplete="name" required />
+
+            <label for="phone">연락처</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" required />
+
+            <label for="interest">관심 분야</label>
+            <select id="interest" name="interest" required>
+              <option value="" selected disabled>선택해 주세요</option>
+              <option value="정부지원사업 기획">정부지원사업 기획</option>
+              <option value="사업계획서 고도화">사업계획서 고도화</option>
+              <option value="AI iot 실시간 관제">AI iot 실시간 관제</option>
+              <option value="기타">기타</option>
+            </select>
+
+            <label for="message">상담 내용</label>
+            <textarea id="message" name="message" rows="4" required></textarea>
+
+            <button class="btn btn-primary" type="submit">상담 신청 메일 작성</button>
+            <p class="form-note">제출 시 메일 앱이 열리며, 입력한 내용이 자동으로 채워집니다.</p>
+          </form>
         </div>
       </section>
     </main>

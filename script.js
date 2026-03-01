@@ -23,6 +23,7 @@ if (menuToggle && siteNav) {
 }
 
 const revealItems = document.querySelectorAll(".reveal");
+const contactForm = document.getElementById("contactForm");
 
 if ("IntersectionObserver" in window) {
 	const revealObserver = new IntersectionObserver(
@@ -48,5 +49,33 @@ if ("IntersectionObserver" in window) {
 } else {
 	revealItems.forEach((item) => {
 		item.classList.add("visible");
+	});
+}
+
+if (contactForm instanceof HTMLFormElement) {
+	contactForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+
+		const formData = new FormData(contactForm);
+		const company = String(formData.get("company") || "").trim();
+		const name = String(formData.get("name") || "").trim();
+		const phone = String(formData.get("phone") || "").trim();
+		const interest = String(formData.get("interest") || "").trim();
+		const message = String(formData.get("message") || "").trim();
+
+		const subject = `[상담신청] ${company} ${name}`;
+		const body = [
+			"HelpBiz 상담 신청이 접수되었습니다.",
+			"",
+			`회사명: ${company}`,
+			`담당자명: ${name}`,
+			`연락처: ${phone}`,
+			`관심 분야: ${interest}`,
+			"",
+			"상담 내용:",
+			message,
+		].join("\n");
+
+		window.location.href = `mailto:helpbiz@naver.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 	});
 }
